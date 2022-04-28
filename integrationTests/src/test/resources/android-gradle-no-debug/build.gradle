@@ -1,0 +1,47 @@
+buildscript {
+  repositories {
+    mavenCentral()
+    mavenLocal()
+    google()
+  }
+  dependencies {
+    classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:${version}'
+    classpath 'com.android.tools.build:gradle:${androidGradle.version}'
+  }
+}
+
+apply plugin: 'jacoco'
+apply plugin: 'com.android.application'
+apply plugin: 'org.sonarqube'
+
+repositories {
+  google()
+  mavenCentral()
+}
+
+dependencies {
+  implementation 'joda-time:joda-time:2.7'
+  testImplementation 'junit:junit:4.12'
+}
+
+android {
+  compileSdkVersion 23
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+}
+
+android.variantFilter { variant ->
+  if(variant.buildType.name.equals('debug')) {
+    variant.setIgnore(true);
+  }
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectName", "Simple Android Gradle Project"
+        property "sonar.projectKey", "org.sonarqube:example-android-gradle"
+    }
+}
+
